@@ -23,12 +23,12 @@ def get_database_path():
     """Download database from Google Drive if not exists locally"""
     
     # Try local path first (for development)
-    local_dev_path = os.path.expanduser("~/Desktop/nfl_app/NFL_Betting_Data_2025.db")
+    local_dev_path = os.path.expanduser("~/Desktop/nfl_app/NFL_Betting_Data_New.db")
     if os.path.exists(local_dev_path):
         return local_dev_path
     
     # Production path (Streamlit Cloud)
-    local_db_path = "NFL_Betting_Data_2025.db"
+    local_db_path = "NFL_Betting_Data_New.db"
     
     # Check if database already downloaded
     if os.path.exists(local_db_path):
@@ -487,7 +487,6 @@ def render_complex_model_tab():
     st.success(f"Loaded {len(df)} games from 2023-2024 seasons")
     
     st.sidebar.header("Model Configuration")
-    
     st.sidebar.subheader("Position Weights")
     
     default_weights = {
@@ -626,9 +625,7 @@ def main():
         render_favorite_model_tab()
 
 if __name__ == "__main__":
-    main()profit']:,.0f}")
-            st.metric("Amount Bet", f"${summary['total_amount_bet']:,.0f}")
-        
+    main()
         with col4:
             st.metric("ROI", f"{summary['roi']:+.1%}")
             st.metric("Avg Bet Size", f"${summary['avg_bet_size']:.0f}")
@@ -703,4 +700,5 @@ def render_favorite_model_tab():
             st.metric("Losses", summary['total_losses'])
         
         with col3:
-            st.metric("Total Profit", f"${summary['total_
+            st.metric("Total Profit", f"${summary['total_profit']:,.0f}")
+            st.metric("Amount Bet", f"${summary['total_amount_bet']:,.0f}")
