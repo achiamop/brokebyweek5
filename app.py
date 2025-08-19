@@ -17,7 +17,7 @@ st.set_page_config(
 
 # Google Drive configuration
 GOOGLE_DRIVE_FILE_ID = "1vfDVrri9XcIb39F6Ph9vfp_lC2fqAV8K"
-DATABASE_URL = f"https://drive.google.com/uc?export=download&id={GOOGLE_DRIVE_FILE_ID}&confirm=t"
+DATABASE_URL = f"https://drive.usercontent.google.com/download?id={GOOGLE_DRIVE_FILE_ID}&export=download&authuser=0&confirm=t"
 
 def get_database_path():
     """Download database from Google Drive if not exists locally"""
