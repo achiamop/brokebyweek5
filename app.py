@@ -32,7 +32,26 @@ def get_database_path():
     
     # Check if database already downloaded
     if os.path.exists(local_db_path):
-        return local_db_path
+        # Add debug info
+        file_size = os.path.getsize(local_db_path)
+        st.info(f"Found existing database file: {file_size} bytes")
+        
+        # Check if it's actually a database
+        try:
+            conn = sqlite3.connect(local_db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1")
+            result = cursor.fetchone()
+            conn.close()
+            if result:
+                st.success("Database file is valid!")
+                return local_db_path
+            else:
+                st.error("Database file exists but has no tables - re-downloading...")
+                os.remove(local_db_path)
+        except Exception as e:
+            st.error(f"Database file corrupted: {e} - re-downloading...")
+            os.remove(local_db_path)
     
     # Download from Google Drive
     try:
@@ -60,12 +79,24 @@ def get_database_path():
             progress_bar.empty()
             status_text.empty()
             
-        st.success("✅ Database loaded successfully!")
+            # Check what we actually downloaded
+            if os.path.exists(local_db_path):
+                file_size = os.path.getsize(local_db_path)
+                st.info(f"Downloaded file size: {file_size} bytes")
+                
+                # Try to read first few bytes to see if it's HTML
+                with open(local_db_path, 'rb') as f:
+                    first_bytes = f.read(100)
+                    if b'<html' in first_bytes or b'<!DOCTYPE' in first_bytes:
+                        st.error("Downloaded HTML instead of database file!")
+                        st.text(f"First 100 bytes: {first_bytes}")
+                        return None
+            
+        st.success("✅ Database downloaded!")
         return local_db_path
         
     except Exception as e:
         st.error(f"❌ Error downloading database: {e}")
-        st.info("💡 Please check that the Google Drive file is publicly accessible")
         return None
 
 # Get database path
